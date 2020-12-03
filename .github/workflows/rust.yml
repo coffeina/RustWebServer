@@ -4,8 +4,6 @@ on: push
 
 env:
   CARGO_TERM_COLOR: always
-  GITHUB_TOKEN: ${{ secrets.TOKEN }}
-  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
 jobs:
@@ -19,14 +17,3 @@ jobs:
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
-    - name: Build notification
-      if: always()
-        uses: adamkdean/simple-slack-notify@master
-        with:
-          channel: '#notifications'
-          status: ${{ job.status }}
-          success_text: 'Build (#${env.GITHUB_RUN_NUMBER}) completed successfully'
-          failure_text: 'Build (#${env.GITHUB_RUN_NUMBER}) failed'
-          cancelled_text: 'Build (#${env.GITHUB_RUN_NUMBER}) was cancelled'
-          fields: |
-            [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
